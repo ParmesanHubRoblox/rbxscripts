@@ -105,11 +105,23 @@ local function CheckItems(CurrentBricks)
 	end
 end
 
+Character.ChildAdded:Connect(function(Child)
+	if Child.ClassName == "Tool" and Child:FindFirstChild("SwordPart") then
+		Child:GetPropertyChangedSignal("Enabled"):Connect(function()
+			if Child.Enabled == true then
+				Child.SwordPart.Size = Vector3.new(1, 1, 1)
+			elseif Child.Enabled == false then
+				Child.SwordPart.Size = Vector3.new(2048, 2048, 0.1)
+			end
+		end)
+	end
+end)
+
 while true and task.wait() do
 	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 	local Tool = Character:FindFirstChildOfClass("Tool")
-	
+
 	local ModifiedString = string.gsub(BricksLabel.Text, ",", "")
 	local CurrentBricks = tonumber(ModifiedString)
 
@@ -120,7 +132,9 @@ while true and task.wait() do
 	if #Monsters ~= 0 then
 		Platform.Position = Vector3.new(-47066.55078125, 293.02764892578125, -550.57501220703125)
 		HumanoidRootPart.CFrame = CFrame.new(-47066.5508, 295.027649, -550.575012, -0.999065042, 0, 0.0432319902, 0, 1, 0, -0.0432319902, 0, -0.999065042)
-		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(2500, 2500, 0.1) end
+		if Tool then
+			Tool.SwordPart.Size = Tool.Enabled and Vector3.new(1, 1, 1) or Vector3.new(2048, 2048, 0.1)
+		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
 
