@@ -121,7 +121,7 @@ end
 while true and task.wait() do
 	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-	local Tool = Character:WaitForChildOfClass("Tool")
+	local Tool = Character:FindFirstChildOfClass("Tool")
 	
 	local ModifiedString = string.gsub(BricksLabel.Text, ",", "")
 	local CurrentBricks = tonumber(ModifiedString)
@@ -133,7 +133,7 @@ while true and task.wait() do
 	if #Monsters ~= 0 then
 		HumanoidRootPart.Anchored = true
 		HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-47064, 305, -89))
-		if Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(1000, 1000, 0) end
+		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(1000, 1000, 0) end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
 
@@ -148,22 +148,3 @@ while true and task.wait() do
 		end
 	end
 end
-
-local LocalPlayer = game.Players.LocalPlayer
-local Character = LocalPlayer.Character
-local HumanoidRootPart = Character.HumanoidRootPart
-
-for index, monster in pairs(workspace.Monsters:GetChildren()) do
-	monster.PrimaryPart.Anchored = true
-	local NewCFrame = CFrame.new
-	monster:SetPrimaryPartCFrame(HumanoidRootPart.CFrame + Vector3.new(0, 5, 0))
-end
-
-workspace.averytiredcheese.ClassicSword:Activate()
-
-while task.wait(0.1) do
-	print(workspace.averytiredcheese.ClassicSword.SwordPart.Rotation)
-end
-
-local TeleportService = game:GetService("TeleportService")
-TeleportService:Teleport(17579225831)
