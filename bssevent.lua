@@ -29,19 +29,6 @@ if Platform == nil then
 	Platform.Name = "Platform"
 end
 
-task.spawn(function()
-	while true and RunService.RenderStepped:Wait() do
-		local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-
-		for _, v in Character:GetDescendants() do
-			if v:IsA("BasePart") then v.CanCollide = false end
-		end
-
-		Platform.Position = Character.HumanoidRootPart.Position + Vector3.new(0, -3.75, 0)
-	end
-end)
-
 local IgnoreTokens = {}
 
 local function FindClosestToken(Tokens, HumanoidRootPart)
@@ -132,8 +119,9 @@ while true and task.wait() do
 
 	if #Monsters ~= 0 then
 		HumanoidRootPart.Anchored = true
-		HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-47064, 305, -89))
-		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(1000, 1000, 0) end
+		Platform.Position = CFrame.new(Vector3.new(-47064, 305, -89))
+		HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-47064, 307, -89))
+		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(1000, 1000, 0.1) end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
 
