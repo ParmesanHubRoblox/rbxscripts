@@ -105,18 +105,6 @@ local function CheckItems(CurrentBricks)
 	end
 end
 
-Character.ChildAdded:Connect(function(Child)
-	if Child.ClassName == "Tool" and Child:FindFirstChild("SwordPart") then
-		Child:GetPropertyChangedSignal("Enabled"):Connect(function()
-			if Child.Enabled == true then
-				Child.SwordPart.Size = Vector3.new(1, 1, 1)
-			elseif Child.Enabled == false then
-				Child.SwordPart.Size = Vector3.new(2048, 2048, 0.1)
-			end
-		end)
-	end
-end)
-
 while true and task.wait() do
 	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
