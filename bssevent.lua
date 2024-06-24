@@ -119,7 +119,7 @@ while true and task.wait() do
 
 	if #Monsters ~= 0 then
 		HumanoidRootPart.Anchored = true
-		Platform.Position = CFrame.new(Vector3.new(-47064, 305, -89))
+		Platform.Position = Vector3.new(-47064, 305, -89)
 		HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-47064, 307, -89))
 		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(1000, 1000, 0.1) end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
