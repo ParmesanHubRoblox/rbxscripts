@@ -120,7 +120,7 @@ while true and task.wait() do
 	if #Monsters ~= 0 then
 		HumanoidRootPart.Anchored = true
 		Platform.Position = Vector3.new(-47066.55078125, 293.02764892578125, -550.57501220703125)
-		HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-47066.55078125, 295.02764892578125, -550.57501220703125))
+		HumanoidRootPart.CFrame = CFrame.new(-47066.5508, 295.027649, -550.575012, -0.999065042, 0, 0.0432319902, 0, 1, 0, -0.0432319902, 0, -0.999065042)
 		if Tool and Tool:FindFirstChild("SwordPart") then Tool.SwordPart.Size = Vector3.new(2500, 2500, 0.1) end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
