@@ -64,12 +64,12 @@ local function FindClosestToken(Tokens, HumanoidRootPart)
 end
 
 local function IsMonsterOnFloor(Monster)
-	if not Monster:FindFirstChild("MonsterType") or not Monster:FindFirstChild("HumanoidRootPart") then return false end
+	if not Monster:FindFirstChild("MonsterType") or not Monster:FindFirstChild("HumanoidRootPart") then return end
 	
 	local FloorTopPos = Floor.Position.Y + Floor.Size.Y / 2
 	
 	if Monster.MonsterType.Value == "Slime" then
-		if not Monster:FindFirstChild("SlimeMonster") or not Monster.SlimeMonster:FindFirstChild("Blob2") then return false end
+		if not Monster:FindFirstChild("SlimeMonster") then return end
 		local SlimeBottomPos = Monster.HumanoidRootPart.Position.Y - Monster.SlimeMonster.Blob2.Size.Y / 2
 		return (SlimeBottomPos - FloorTopPos) <= 1
 	elseif Monster.MonsterType.Value == "Zombie" then
@@ -77,7 +77,7 @@ local function IsMonsterOnFloor(Monster)
 		return (ZombieBottomPos - FloorTopPos) <= 1
 	end
 	
-	return false
+	return nil
 end
 
 local CurrentItems = {
@@ -131,14 +131,16 @@ while true and task.wait() do
 
 	if #Monsters ~= 0 then
 		for _, Monster in pairs(Monsters) do
-			if IsMonsterOnFloor(Monster) == false then continue end 
-			
-			local MonsterHumanoidRootPart = Monster.HumanoidRootPart
-			local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
-			local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
-			
-			HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))
-			RunService.RenderStepped:Wait()
+			if IsMonsterOnFloor(Monster) then
+				local MonsterHumanoidRootPart = Monster.HumanoidRootPart
+				local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
+				local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
+				
+				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))
+				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.5, 0))
+				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.75, 0))
+				RunService.RenderStepped:Wait()
+			end
 		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
