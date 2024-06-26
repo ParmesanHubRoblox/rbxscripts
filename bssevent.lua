@@ -136,14 +136,16 @@ while true and task.wait() do
 				local MonsterHumanoidRootPart = Monster.HumanoidRootPart
 				local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
 				local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
-
-				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))
-				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.5, 0))
-				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.75, 0))
 				
-				Humanoid.Jump = true
+				local Tween = TweenService:Create(
+					HumanoidRootPart,
+					TweenInfo.new(0.05, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false),
+					{CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))}
+				)
 				
-				task.wait(0.05)
+				Tween:Play(); Tween.Completed:Wait()
+				
+				RunService.RenderStepped:Wait()
 			end
 		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
