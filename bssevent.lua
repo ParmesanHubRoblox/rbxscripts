@@ -65,9 +65,9 @@ end
 
 local function IsMonsterOnFloor(Monster)
 	if not Monster:FindFirstChild("MonsterType") or not Monster:FindFirstChild("HumanoidRootPart") then return end
-	
+
 	local FloorTopPos = Floor.Position.Y + Floor.Size.Y / 2
-	
+
 	if Monster.MonsterType.Value == "Slime" then
 		if not Monster:FindFirstChild("SlimeMonster") then return end
 		local SlimeBottomPos = Monster.HumanoidRootPart.Position.Y - Monster.SlimeMonster.Blob2.Size.Y / 2
@@ -76,7 +76,7 @@ local function IsMonsterOnFloor(Monster)
 		local ZombieBottomPos = Monster.HumanoidRootPart.Position.Y - 3.75
 		return (ZombieBottomPos - FloorTopPos) <= 1
 	end
-	
+
 	return nil
 end
 
@@ -97,23 +97,23 @@ local function CheckItems(CurrentBricks)
 		local ItemData = CurrentItems[index]
 		if ItemData.Owned == true then continue end
 		if ItemData.Cost > CurrentBricks then return end
-		
+
 		local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-		
+
 		while TycoonButtons[ItemData.Name].Button.Color ~= Color3.fromRGB(0, 255, 0) do
 			RunService.RenderStepped:Wait()
 		end
-		
+
 		if TokenTween then TokenTween:Pause(); TokenTween = nil end
-		
+
 		while TycoonButtons[ItemData.Name].Button.Color ~= Color3.fromRGB(199, 39, 28) do
 			HumanoidRootPart.CFrame = CFrame.new(TycoonButtons[ItemData.Name].Button.Position + Vector3.new(0, 3.75, 0))
 			RunService.RenderStepped:Wait()
 		end
 
 		CurrentItems[index].Owned = true
-		
+
 		break
 	end
 end
@@ -121,12 +121,13 @@ end
 while true and task.wait() do
 	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+	local Humanoid = Character:WaitForChild("Humanoid")
 	
 	local ModifiedString = string.gsub(BricksLabel.Text, ",", "")
 	local CurrentBricks = tonumber(ModifiedString)
-	
+
 	CheckItems(CurrentBricks)
-	
+
 	local Monsters = game.Workspace.Monsters:GetChildren()
 
 	if #Monsters ~= 0 then
@@ -135,11 +136,14 @@ while true and task.wait() do
 				local MonsterHumanoidRootPart = Monster.HumanoidRootPart
 				local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
 				local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
-				
+
 				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))
 				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.5, 0))
 				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 0.75, 0))
-				RunService.RenderStepped:Wait()
+				
+				Humanoid.Jump = true
+				
+				task.wait(0.05)
 			end
 		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
