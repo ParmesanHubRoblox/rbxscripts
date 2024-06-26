@@ -29,6 +29,19 @@ if Platform == nil then
 	Platform.Name = "Platform"
 end
 
+task.spawn(function()
+	while true and RunService.RenderStepped:Wait() do
+		local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+
+		for _, v in Character:GetDescendants() do
+			if v:IsA("BasePart") then v.CanCollide = false end
+		end
+
+		Platform.Position = Character.HumanoidRootPart.Position + Vector3.new(0, -3.75, 0)
+	end
+end)
+
 local IgnoreTokens = {}
 
 local function FindClosestToken(Tokens, HumanoidRootPart)
@@ -51,20 +64,20 @@ local function FindClosestToken(Tokens, HumanoidRootPart)
 end
 
 local function IsMonsterOnFloor(Monster)
-	if not Monster:FindFirstChild("MonsterType") or not Monster:FindFirstChild("HumanoidRootPart") then return end
-
+	if not Monster:FindFirstChild("MonsterType") or not Monster:FindFirstChild("HumanoidRootPart") then return false end
+	
 	local FloorTopPos = Floor.Position.Y + Floor.Size.Y / 2
-
+	
 	if Monster.MonsterType.Value == "Slime" then
-		if not Monster:FindFirstChild("SlimeMonster") then return end
+		if not Monster:FindFirstChild("SlimeMonster") or not Monster.SlimeMonster:FindFirstChild("Blob2") then return false end
 		local SlimeBottomPos = Monster.HumanoidRootPart.Position.Y - Monster.SlimeMonster.Blob2.Size.Y / 2
 		return (SlimeBottomPos - FloorTopPos) <= 1
 	elseif Monster.MonsterType.Value == "Zombie" then
 		local ZombieBottomPos = Monster.HumanoidRootPart.Position.Y - 3.75
 		return (ZombieBottomPos - FloorTopPos) <= 1
 	end
-
-	return nil
+	
+	return false
 end
 
 local CurrentItems = {
@@ -84,23 +97,23 @@ local function CheckItems(CurrentBricks)
 		local ItemData = CurrentItems[index]
 		if ItemData.Owned == true then continue end
 		if ItemData.Cost > CurrentBricks then return end
-
+		
 		local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-
+		
 		while TycoonButtons[ItemData.Name].Button.Color ~= Color3.fromRGB(0, 255, 0) do
 			RunService.RenderStepped:Wait()
 		end
-
+		
 		if TokenTween then TokenTween:Pause(); TokenTween = nil end
-
+		
 		while TycoonButtons[ItemData.Name].Button.Color ~= Color3.fromRGB(199, 39, 28) do
 			HumanoidRootPart.CFrame = CFrame.new(TycoonButtons[ItemData.Name].Button.Position + Vector3.new(0, 3.75, 0))
 			RunService.RenderStepped:Wait()
 		end
 
 		CurrentItems[index].Owned = true
-
+		
 		break
 	end
 end
@@ -108,20 +121,24 @@ end
 while true and task.wait() do
 	local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-	local Tool = Character:FindFirstChildOfClass("Tool")
-
+	
 	local ModifiedString = string.gsub(BricksLabel.Text, ",", "")
 	local CurrentBricks = tonumber(ModifiedString)
-
+	
 	CheckItems(CurrentBricks)
-
+	
 	local Monsters = game.Workspace.Monsters:GetChildren()
 
 	if #Monsters ~= 0 then
-		Platform.Position = Vector3.new(-47066.55078125, 293.02764892578125, -550.57501220703125)
-		HumanoidRootPart.CFrame = CFrame.new(-47066.5508, 295.027649, -550.575012, -0.999065042, 0, 0.0432319902, 0, 1, 0, -0.0432319902, 0, -0.999065042)
-		if Tool then
-			Tool.SwordPart.Size = Tool.Enabled and Vector3.new(1, 1, 1) or Vector3.new(2048, 2048, 0.1)
+		for _, Monster in pairs(Monsters) do
+			if IsMonsterOnFloor(Monster) == false then continue end 
+			
+			local MonsterHumanoidRootPart = Monster.HumanoidRootPart
+			local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
+			local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
+			
+			HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))
+			RunService.RenderStepped:Wait()
 		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
 		local FlyTime, Token = FindClosestToken(game.Workspace.Collectibles, HumanoidRootPart)
