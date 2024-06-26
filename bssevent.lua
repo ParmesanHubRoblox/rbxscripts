@@ -35,7 +35,7 @@ task.spawn(function()
 		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
 		for _, v in Character:GetDescendants() do
-			if v:IsA("BasePart") and v.Name ~= "SwordPart" then v.CanCollide = false end
+			if v:IsA("BasePart") then v.CanCollide = false end
 		end
 
 		Platform.Position = Character.HumanoidRootPart.Position + Vector3.new(0, -3.75, 0)
@@ -137,15 +137,11 @@ while true and task.wait() do
 				local SlimeMonster = Monster:FindFirstChild("SlimeMonster")
 				local Offset = SlimeMonster and SlimeMonster.Blob2.Size.Y / 6 or 0
 				
-				local Tween = TweenService:Create(
-					HumanoidRootPart,
-					TweenInfo.new(0.05, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false),
-					{CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset, 0))}
-				)
+				HumanoidRootPart.CFrame = CFrame.new(MonsterHumanoidRootPart.Position + Vector3.new(0, -15 - Offset - 1.5, 0))
 				
-				Tween:Play(); Tween.Completed:Wait()
+				Humanoid.Jump = true
 				
-				RunService.RenderStepped:Wait()
+				task.wait(0.05)
 			end
 		end
 	elseif #Monsters == 0 and CurrentItems[7].Owned == false then
