@@ -35,7 +35,7 @@ task.spawn(function()
 		local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
 		for _, v in Character:GetDescendants() do
-			if v:IsA("BasePart") then v.CanCollide = false end
+			if v:IsA("BasePart") and v.Name ~= "SwordPart" then v.CanCollide = false end
 		end
 
 		Platform.Position = Character.HumanoidRootPart.Position + Vector3.new(0, -3.75, 0)
