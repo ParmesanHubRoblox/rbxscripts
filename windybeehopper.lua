@@ -28,7 +28,7 @@ local function GetWebhookInfo()
 		end
 	end
 	
-	if WebhookContent == "" then WebhookContent = "Fighting: **true** \n" end
+	if WebhookContent == "" then WebhookContent = "Fighting: **false** \n" end
 	
 	WebhookContent ..= JoinLink
 	return WebhookContent
