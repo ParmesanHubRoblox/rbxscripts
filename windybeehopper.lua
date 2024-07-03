@@ -17,18 +17,16 @@ local function GetWebhookInfo()
 		if string.find(Monster.Name, "Windy Bee") then
 			local BeeData = {
 				Level = tostring(Monster:WaitForChild("Level").Value),
-				TimeLeft = Monster:WaitForChild("Head"):WaitForChild("GuiAttachment"):WaitForChild("MonsterGui"):WaitForChild("BarRow"):WaitForChild("Bar"):WaitForChild("NumberLabel").Text
 			}
 
 			WebhookContent = 
 				"Fighting: **true** \n"..
-				"Bee Level: ".."**"..BeeData.Level.."** \n"..
-				"Time Left: ".."**"..BeeData.TimeLeft.."** \n"
+				"Bee Level: ".."**"..BeeData.Level.."** \n"
 			break
 		end
 	end
 	
-	if WebhookContent == "" then WebhookContent = "Fighting: **false** \n" end
+	if WebhookContent == "" then WebhookContent = "Fighting: **true** \n" end
 	
 	WebhookContent ..= JoinLink
 	return WebhookContent
