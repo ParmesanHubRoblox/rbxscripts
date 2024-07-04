@@ -9,10 +9,10 @@ local Time = os.date('!*t', os.time());
 
 local function GetWebhookInfo()
 	if not game.Workspace:WaitForChild("NPCBees"):FindFirstChild("Windy") then return nil end
-	
+
 	local WebhookContent = ""
 	local JoinLink = "Server Link: https://roblox.com/discover#/rg-join/1537690962/"..game.JobId
-	
+
 	for _, Monster in pairs(game.Workspace.Monsters:GetChildren()) do
 		if string.find(Monster.Name, "Windy Bee") then
 			local BeeData = {
@@ -25,9 +25,9 @@ local function GetWebhookInfo()
 			break
 		end
 	end
-	
+
 	if WebhookContent == "" then WebhookContent = "Fighting: **false** \n" end
-	
+
 	WebhookContent ..= JoinLink.."\n\n<@611984788563427345>"
 	return WebhookContent
 end
@@ -55,21 +55,25 @@ local function ServerHop()
 
 	local PlaceId = game.PlaceId
 	local Servers = Api..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-	
+
 	function ListServers(cursor)
 		local Raw = game:HttpGet(Servers .. ((cursor and "&cursor="..cursor) or ""))
 		return HttpService:JSONDecode(Raw)
 	end
 
 	local Server, Next
-	
+
 	repeat
 		local Servers = ListServers(Next)
 		Server = Servers.data[1]
 		Next = Servers.nextPageCursor
 	until Server
-
-	TeleportService:TeleportToPlaceInstance(PlaceId, Server.id, Players.LocalPlayer)
+	
+	local success, response = pcall(function()
+		TeleportService:TeleportToPlaceInstance(PlaceId, Server.id, Players.LocalPlayer)
+	end)
+	
+	if success == false then ServerHop() end
 end
 
 task.wait(5)
